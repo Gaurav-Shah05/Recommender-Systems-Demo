@@ -6,7 +6,7 @@ An interactive demonstration of recommendation algorithms using the MovieLens da
 
 ## Live Demo
 
-Try the Streamlit application here: [Movie Recommender System App](https://gaurav-shah05-recommender-systems-demo-app-py-4a58rr.streamlit.app/)
+Try the Streamlit application here: [Movie Recommender System App](https://recommender-systems-demo.streamlit.app/)
 
 ## Project Components
 
