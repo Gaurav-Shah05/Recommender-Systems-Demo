@@ -144,8 +144,8 @@ def plot_user_similarity(user_ratings, uim, k=10):
         if m in idx: vec[idx[m]] = r
 
     knn = NearestNeighbors(metric='cosine', algorithm='brute',
-                           n_neighbors=k1).fit(uim.values)
-    dists, idxs = knn.kneighbors([vec], n_neighbors=k1)
+                           n_neighbors=k+1).fit(uim.values)
+    dists, idxs = knn.kneighbors([vec], n_neighbors=k+1)
     df = pd.DataFrame({
         'Other User': uim.index[idxs.flatten()],
         'Similarity': 1 - dists.flatten()
@@ -162,8 +162,8 @@ def plot_svd_latent_factors(V, n_factors=5):
       """
       df = pd.DataFrame(
           V[:10, :n_factors],
-          index=[f"Movie {i1}" for i in range(10)],
-          columns=[f"Factor {i1}" for i in range(n_factors)]
+          index=[f"Movie {i+1}" for i in range(10)],
+          columns=[f"Factor {i+1}" for i in range(n_factors)]
       )
       fig = px.imshow(
           df,
@@ -239,7 +239,7 @@ def landing_page(movies, ratings):
                     st.image("https://via.placeholder.com/120x180?text=NoImage",
                              width=120)
                 full = movies.loc[movies['movie_id']==mid,'title'].iloc[0]
-                short = full if len(full)<=15 else full[:15]  "…"
+                short = full if len(full)<=15 else full[:15] + "…"
                 st.markdown(
                     f'<p class="movie-title" title="{full}">{short}</p>',
                     unsafe_allow_html=True
@@ -319,7 +319,7 @@ def buffer_page(movies, ratings, uim, rec_matrix):
         prog = st.progress(0)
         for i, msg in enumerate(msgs):
             placeholder.info(msg)
-            prog.progress((i1)/len(msgs))
+            prog.progress((i+1)/len(msgs))
             time.sleep(3)
         placeholder.empty()
         prog.empty()
