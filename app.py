@@ -227,7 +227,7 @@ def landing_page(movies, ratings):
         st.session_state.posters_fetched = True
 
     # Display 3×5 grid
-    for row in [top15[i : i5] for i in range(0, 15, 5)]:
+    for row in [top15[i : i + 5] for i in range(0, 15, 5)]:
         cols = st.columns(5, gap="large")
         for mid, col in zip(row, cols):
             with col:
