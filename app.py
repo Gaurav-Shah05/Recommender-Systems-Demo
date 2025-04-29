@@ -289,10 +289,10 @@ def buffer_page(movies, ratings, uim, rec_matrix):
         else:
             st.session_state.recs = svd_recs(ur, rec_matrix, movies, uim)
  
-         # fetch posters for recommendations
-         st.session_state.rec_posters = {
+        # fetch posters for recommendations
+        st.session_state.rec_posters = {
              mid: fetch_poster(mid) for mid,_ in st.session_state.recs
-         }
+        }
 
     # spinner messages once
     if 'buffer_shown' not in st.session_state:
