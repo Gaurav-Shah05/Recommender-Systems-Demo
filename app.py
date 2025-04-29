@@ -439,7 +439,7 @@ def main():
     elif page == 'buffer':
         buffer_page(movies, ratings, uim, svd_model)
     elif page == 'insights':
-        insights_page(movies, ratings, uim, svd_model)
+        insights_page(movies, ratings, uim, svd_model, V)
     else:  # recommendations
         recommend_page(movies, ratings, uim, svd_model)
 
