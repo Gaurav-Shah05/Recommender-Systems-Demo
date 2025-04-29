@@ -125,10 +125,18 @@ def svd_recs(user_ratings, rec_matrix, movies_df, uim, n=6):
     # Predict ratings = weighted sum over item affinities:
     scores = tmp @ rec_matrix    # shape = (n_movies,)
 
-    user_avg = sum(user_ratings.values()) / len(user_ratings)
-    user_std = np.std(list(user_ratings.values()))
-    scaled_scores = user_avg + (scores - np.mean(scores)) * (user_std * 0.8)
-    normalized_scores = np.clip(scaled_scores, 1.2, 4.9)
+    from scipy.special import expit  # sigmoid function
+
+    centered = scores - np.mean(scores)
+    
+    alpha = 0.5  
+    transformed = expit(centered * alpha)
+    
+    min_user = min(user_ratings.values())
+    max_user = max(user_ratings.values())
+    user_range = max_user - min_user
+    
+    normalized_scores = min_user + transformed * (user_range * 1.2)
 
     # # Normalize scores to 1-5 range before returning
     # min_score, max_score = np.min(scores), np.max(scores)
