@@ -1,0 +1,1501 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Movie Recommender Systems: A Practical Tutorial &#8212; Recommender System: An Introduction</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f051327d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'movielens';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Recommender System: An Introduction</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/gaurav-shah05/gaurav-shah05.github.io" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/movielens.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Movie Recommender Systems: A Practical Tutorial</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> On this page </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-recommendation-systems">What are Recommendation Systems?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-setup">1. Environment Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#download-and-load-the-movielens-100k-dataset">2. Download and Load the MovieLens 100K Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-the-movielens-dataset">Understanding the MovieLens Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploratory-data-analysis">3. Exploratory Data Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-training-and-testing-sets">4. Create Training and Testing Sets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-1-user-based-collaborative-filtering">5. Model 1: User-Based Collaborative Filtering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-based-collaborative-filtering-explained">User-Based Collaborative Filtering Explained</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-2-matrix-factorization-using-svd">6. Model 2: Matrix Factorization using SVD</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-factorization-svd-explained">Matrix Factorization (SVD) Explained</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-of-models">7. Comparison of Models</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-recommendations-for-a-sample-user">8. Get Recommendations for a Sample User</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#save-models-for-the-web-app">9. Save Models for the Web App</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">10. Conclusion</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="movie-recommender-systems-a-practical-tutorial">
+<h1>Movie Recommender Systems: A Practical Tutorial<a class="headerlink" href="#movie-recommender-systems-a-practical-tutorial" title="Link to this heading">#</a></h1>
+<section id="what-are-recommendation-systems">
+<h2>What are Recommendation Systems?<a class="headerlink" href="#what-are-recommendation-systems" title="Link to this heading">#</a></h2>
+<p>Recommendation systems help us discover content we might like based on our past preferences. They’re the technology behind “You might also like…” suggestions on sites like Netflix, Amazon, and Spotify.</p>
+<p>There are two main approaches we’ll explore in this notebook:</p>
+<ol class="arabic simple">
+<li><p><strong>User-Based Collaborative Filtering</strong>: This is like asking your friends for movie recommendations. If you and another person have similar taste in movies you’ve both seen, you’ll probably like the movies they enjoyed that you haven’t watched yet.</p></li>
+<li><p><strong>Matrix Factorization (SVD)</strong>: This technique finds hidden patterns in people’s preferences. For example, you might not explicitly state you like “sci-fi movies with strong hero leads” or “slow-paced character dramas,” but the algorithm can discover these patterns in your ratings and recommend similar content.</p></li>
+</ol>
+</section>
+<section id="environment-setup">
+<h2>1. Environment Setup<a class="headerlink" href="#environment-setup" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install required packages</span>
+<span class="c1"># Only run this cell if you&#39;re in Google Colab to reproduce this notebook or need to install these packages</span>
+<span class="c1"># !pip install numpy pandas scikit-learn scikit-surprise matplotlib seaborn</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import required libraries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NearestNeighbors</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">surprise</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">surprise</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVD</span><span class="p">,</span> <span class="n">Reader</span><span class="p">,</span> <span class="n">Dataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">surprise.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span> <span class="k">as</span> <span class="n">surprise_train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">surprise</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="c1"># Set styles for visualization</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-v0_8-whitegrid&#39;</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="download-and-load-the-movielens-100k-dataset">
+<h2>2. Download and Load the MovieLens 100K Dataset<a class="headerlink" href="#download-and-load-the-movielens-100k-dataset" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download the dataset if it doesn&#39;t exist</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;ml-100k&#39;</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">urllib.request</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://files.grouplens.org/datasets/movielens/ml-100k.zip&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading MovieLens 100K dataset from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s1">&#39;ml-100k.zip&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
+        <span class="n">zip_ref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dataset downloaded and extracted.&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MovieLens 100K dataset already exists.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Downloading MovieLens 100K dataset from http://files.grouplens.org/datasets/movielens/ml-100k.zip
+Dataset downloaded and extracted.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the ratings data</span>
+<span class="n">ratings_path</span> <span class="o">=</span> <span class="s1">&#39;ml-100k/u.data&#39;</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">]</span>
+<span class="n">ratings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">ratings_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+<span class="c1"># Load movie information</span>
+<span class="n">movies_path</span> <span class="o">=</span> <span class="s1">&#39;ml-100k/u.item&#39;</span>
+<span class="n">movie_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;release_date&#39;</span><span class="p">,</span> <span class="s1">&#39;video_release_date&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;imdb_url&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">,</span> <span class="s1">&#39;Action&#39;</span><span class="p">,</span> <span class="s1">&#39;Adventure&#39;</span><span class="p">,</span> <span class="s1">&#39;Animation&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Children</span><span class="se">\&#39;</span><span class="s1">s&#39;</span><span class="p">,</span> <span class="s1">&#39;Comedy&#39;</span><span class="p">,</span> <span class="s1">&#39;Crime&#39;</span><span class="p">,</span> <span class="s1">&#39;Documentary&#39;</span><span class="p">,</span> <span class="s1">&#39;Drama&#39;</span><span class="p">,</span> <span class="s1">&#39;Fantasy&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Film-Noir&#39;</span><span class="p">,</span> <span class="s1">&#39;Horror&#39;</span><span class="p">,</span> <span class="s1">&#39;Musical&#39;</span><span class="p">,</span> <span class="s1">&#39;Mystery&#39;</span><span class="p">,</span> <span class="s1">&#39;Romance&#39;</span><span class="p">,</span> <span class="s1">&#39;Sci-Fi&#39;</span><span class="p">,</span> 
+                 <span class="s1">&#39;Thriller&#39;</span><span class="p">,</span> <span class="s1">&#39;War&#39;</span><span class="p">,</span> <span class="s1">&#39;Western&#39;</span><span class="p">]</span>
+<span class="n">movies</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">movies_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">movie_columns</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+
+<span class="c1"># Remove the timestamp from ratings as we won&#39;t be using it</span>
+<span class="n">ratings</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Display the first few rows of each dataset</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ratings dataset:&quot;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">ratings</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Movies dataset:&quot;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">movies</span><span class="p">[[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ratings dataset:
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>user_id</th>
+      <th>movie_id</th>
+      <th>rating</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>196</td>
+      <td>242</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>186</td>
+      <td>302</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>22</td>
+      <td>377</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>244</td>
+      <td>51</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>166</td>
+      <td>346</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Movies dataset:
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>movie_id</th>
+      <th>title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>Toy Story (1995)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>GoldenEye (1995)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>Four Rooms (1995)</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>Get Shorty (1995)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>Copycat (1995)</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="understanding-the-movielens-dataset">
+<h2>Understanding the MovieLens Dataset<a class="headerlink" href="#understanding-the-movielens-dataset" title="Link to this heading">#</a></h2>
+<p>We’ll use the MovieLens 100K dataset, which contains 100,000 ratings from 943 users on 1,682 movies. The MovieLens dataset contains movie ratings from real users. Each rating is on a scale of 1-5 stars. We’ll use this data to:</p>
+<ol class="arabic simple">
+<li><p>See what movies people tend to rate highest.</p></li>
+<li><p>Look at how many movies each user typically rates.</p></li>
+<li><p>Understand which movies are most popular.</p></li>
+<li><p>Train our recommendation algorithms to predict what rating a user would give to a movie they haven’t seen yet.</p></li>
+</ol>
+<p>This is similar to how Netflix learns your preferences from movies you’ve rated to recommend new movies you might enjoy.</p>
+</section>
+<section id="exploratory-data-analysis">
+<h2>3. Exploratory Data Analysis<a class="headerlink" href="#exploratory-data-analysis" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic statistics of the dataset</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total number of ratings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of unique users: </span><span class="si">{</span><span class="n">ratings</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of unique movies: </span><span class="si">{</span><span class="n">ratings</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rating range: </span><span class="si">{</span><span class="n">ratings</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">ratings</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Distribution of ratings</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ratings</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Ratings&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Rating&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Number of ratings per user</span>
+<span class="n">user_ratings_count</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;user_id&#39;</span><span class="p">)[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">user_ratings_count</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">user_ratings_count</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Number of Ratings per User&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Ratings&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of Users&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Number of ratings per movie</span>
+<span class="n">movie_ratings_count</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;movie_id&#39;</span><span class="p">)[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">movie_ratings_count</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">movie_ratings_count</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;teal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Number of Ratings per Movie&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Ratings&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of Movies&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Top 10 most rated movies</span>
+<span class="n">top_movies</span> <span class="o">=</span> <span class="n">movie_ratings_count</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">top_movies</span> <span class="o">=</span> <span class="n">top_movies</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">movies</span><span class="p">[[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;movie_id&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">top_movies</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Top 10 Most Rated Movies&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Movie Title&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of Ratings&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total number of ratings: 100000
+Number of unique users: 943
+Number of unique movies: 1682
+Rating range: 1 to 5
+</pre></div>
+</div>
+<img alt="_images/81ae3cd36562bec61c4dc14c4ea10778d5865e05103690910abe924666ae2ecc.png" src="_images/81ae3cd36562bec61c4dc14c4ea10778d5865e05103690910abe924666ae2ecc.png" />
+<img alt="_images/32899c12513bba83483b68add3e0498c62ca89b9ab19382e6e25bf8f11948341.png" src="_images/32899c12513bba83483b68add3e0498c62ca89b9ab19382e6e25bf8f11948341.png" />
+<img alt="_images/7af9537a263b20a233620565d867b5bd6714f2626881444c4185b55d93204fb0.png" src="_images/7af9537a263b20a233620565d867b5bd6714f2626881444c4185b55d93204fb0.png" />
+<img alt="_images/a314d1e1eb14d2f96da9bbae866f05e5c2eeafcb7e3b46dd07aa45f15710edee.png" src="_images/a314d1e1eb14d2f96da9bbae866f05e5c2eeafcb7e3b46dd07aa45f15710edee.png" />
+</div>
+</div>
+</section>
+<section id="create-training-and-testing-sets">
+<h2>4. Create Training and Testing Sets<a class="headerlink" href="#create-training-and-testing-sets" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Split the data for sklearn-based approaches</span>
+<span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training set size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test set size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training set size: 80000
+Test set size: 20000
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create user-item matrices with proper handling of NaN values</span>
+<span class="c1"># For User-Based Collaborative Filtering</span>
+
+<span class="c1"># Create a utility matrix (user-item matrix) for the training set</span>
+<span class="n">user_item_matrix_train</span> <span class="o">=</span> <span class="n">train_data</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span>
+
+<span class="c1"># Fill NaN values with 0 (representing no rating)</span>
+<span class="n">user_item_matrix_train_filled</span> <span class="o">=</span> <span class="n">user_item_matrix_train</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Quick preview of the user-item matrix</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User-Item Matrix Shape (users x movies):&quot;</span><span class="p">,</span> <span class="n">user_item_matrix_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">user_item_matrix_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:</span><span class="mi">5</span><span class="p">])</span>  <span class="c1"># Show a small part of the matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>User-Item Matrix Shape (users x movies): (943, 1653)
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>movie_id</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+    <tr>
+      <th>user_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>NaN</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>NaN</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>4.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For Surprise library (SVD)</span>
+<span class="n">reader</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">(</span><span class="n">rating_scale</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">load_from_df</span><span class="p">(</span><span class="n">ratings</span><span class="p">[[</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">]],</span> <span class="n">reader</span><span class="p">)</span>
+<span class="n">trainset</span><span class="p">,</span> <span class="n">testset</span> <span class="o">=</span> <span class="n">surprise_train_test_split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="model-1-user-based-collaborative-filtering">
+<h2>5. Model 1: User-Based Collaborative Filtering<a class="headerlink" href="#model-1-user-based-collaborative-filtering" title="Link to this heading">#</a></h2>
+<section id="user-based-collaborative-filtering-explained">
+<h3>User-Based Collaborative Filtering Explained<a class="headerlink" href="#user-based-collaborative-filtering-explained" title="Link to this heading">#</a></h3>
+<p>User-based collaborative filtering works like this:</p>
+<ol class="arabic simple">
+<li><p><strong>Find Similar Users</strong>: For a target user (let’s call them Alex), we find other users who have similar taste in movies. We do this by comparing their ratings on movies both people have watched.</p></li>
+<li><p><strong>Recommend What Similar Users Liked</strong>: We then recommend movies that these similar users enjoyed but Alex hasn’t watched yet.</p></li>
+</ol>
+<p>For example, if Alex and Jordan both gave high ratings to “Star Wars” and “The Matrix” but low ratings to romantic comedies, they probably have similar taste. If Jordan loved “Blade Runner” (which Alex hasn’t seen), it’s likely that Alex would enjoy it too.</p>
+<p>The “k” parameter represents how many similar users we consider when making recommendations. A higher k means we look at more users’ opinions, which generally gives more reliable predictions (as we can see in the graph below).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We&#39;ll implement a User-Based Collaborative Filtering approach</span>
+<span class="c1"># 1. Find similar users</span>
+<span class="c1"># 2. Generate recommendations based on what similar users liked</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">user_based_cf</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">k_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_recommendations</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate recommendations for a user using user-based collaborative filtering</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    - user_id: ID of the target user</span>
+<span class="sd">    - matrix: User-item matrix where rows are users, columns are movies, and values are ratings</span>
+<span class="sd">    - k_neighbors: Number of similar users to consider</span>
+<span class="sd">    - n_recommendations: Number of movie recommendations to return</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">    - List of recommended movie IDs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get the user&#39;s row from the matrix</span>
+    <span class="k">if</span> <span class="n">user_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">matrix</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User ID </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2"> not found in the matrix.&quot;</span><span class="p">)</span>
+    
+    <span class="n">user_row</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">user_id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Fit the KNN model on the matrix</span>
+    <span class="n">model_knn</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;brute&#39;</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="n">k_neighbors</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">model_knn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    
+    <span class="c1"># Find the k nearest neighbors</span>
+    <span class="n">distances</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">model_knn</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">user_row</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="n">k_neighbors</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># The first neighbor is the user itself, so we&#39;ll skip it</span>
+    <span class="n">similar_user_indices</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">similar_users</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">similar_user_indices</span><span class="p">]</span>
+    
+    <span class="c1"># Get movies the user hasn&#39;t rated</span>
+    <span class="n">user_rated_movies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">user_id</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">all_movies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">movies_to_recommend</span> <span class="o">=</span> <span class="n">all_movies</span> <span class="o">-</span> <span class="n">user_rated_movies</span>
+    
+    <span class="c1"># Calculate recommendation scores for each unseen movie</span>
+    <span class="n">movie_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">movie_id</span> <span class="ow">in</span> <span class="n">movies_to_recommend</span><span class="p">:</span>
+        <span class="c1"># Get the ratings of similar users for this movie</span>
+        <span class="n">movie_ratings</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">similar_users</span><span class="p">,</span> <span class="n">movie_id</span><span class="p">]</span>
+        <span class="c1"># Filter out users who haven&#39;t rated this movie</span>
+        <span class="n">valid_ratings</span> <span class="o">=</span> <span class="n">movie_ratings</span><span class="p">[</span><span class="n">movie_ratings</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_ratings</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Calculate the weighted average rating</span>
+            <span class="c1"># (Here, we&#39;re using a simple average, but you could use weighted average based on similarity)</span>
+            <span class="n">avg_rating</span> <span class="o">=</span> <span class="n">valid_ratings</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">movie_scores</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">movie_id</span><span class="p">,</span> <span class="n">avg_rating</span><span class="p">))</span>
+    
+    <span class="c1"># Sort by score and get the top n recommendations</span>
+    <span class="n">movie_scores</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">recommended_movies</span> <span class="o">=</span> <span class="p">[</span><span class="n">movie_id</span> <span class="k">for</span> <span class="n">movie_id</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">movie_scores</span><span class="p">[:</span><span class="n">n_recommendations</span><span class="p">]]</span>
+    
+    <span class="k">return</span> <span class="n">recommended_movies</span><span class="p">,</span> <span class="n">movie_scores</span><span class="p">[:</span><span class="n">n_recommendations</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Evaluate the User-Based CF model using RMSE</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_user_based_cf</span><span class="p">(</span><span class="n">train_matrix</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span> <span class="n">k_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="c1"># Create a copy to avoid modifying the original</span>
+    <span class="n">train_matrix_copy</span> <span class="o">=</span> <span class="n">train_matrix</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+    <span class="c1"># Initialize KNN model</span>
+    <span class="n">model_knn</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;brute&#39;</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="n">k_neighbors</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">model_knn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_matrix_copy</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    
+    <span class="n">predictions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">actual_ratings</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="c1"># Use a sample of test data to speed up evaluation</span>
+    <span class="n">sample_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_data</span><span class="p">))</span>
+    <span class="n">test_sample</span> <span class="o">=</span> <span class="n">test_data</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">test_sample</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span>
+        <span class="n">movie_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">]</span>
+        <span class="n">actual_rating</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># Skip if user or movie is not in the training set</span>
+        <span class="k">if</span> <span class="n">user_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">train_matrix_copy</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">movie_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">train_matrix_copy</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">continue</span>
+        
+        <span class="c1"># Get the user&#39;s row</span>
+        <span class="n">user_row</span> <span class="o">=</span> <span class="n">train_matrix_copy</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">user_id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># Find similar users</span>
+        <span class="n">distances</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">model_knn</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">user_row</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="n">k_neighbors</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">similar_user_indices</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># Skip the user itself</span>
+        <span class="n">similar_users</span> <span class="o">=</span> <span class="n">train_matrix_copy</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">similar_user_indices</span><span class="p">]</span>
+        
+        <span class="c1"># Get ratings for the movie from similar users</span>
+        <span class="n">similar_users_ratings</span> <span class="o">=</span> <span class="n">train_matrix_copy</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">similar_users</span><span class="p">,</span> <span class="n">movie_id</span><span class="p">]</span>
+        <span class="n">valid_ratings</span> <span class="o">=</span> <span class="n">similar_users_ratings</span><span class="p">[</span><span class="n">similar_users_ratings</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_ratings</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Predict rating as the average rating from similar users</span>
+            <span class="n">predicted_rating</span> <span class="o">=</span> <span class="n">valid_ratings</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">predictions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">predicted_rating</span><span class="p">)</span>
+            <span class="n">actual_ratings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actual_rating</span><span class="p">)</span>
+    
+    <span class="c1"># Calculate RMSE</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">actual_ratings</span><span class="p">,</span> <span class="n">predictions</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">rmse</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test the User-Based CF model with different numbers of neighbors</span>
+<span class="n">k_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+<span class="n">cf_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">k_values</span><span class="p">:</span>
+    <span class="n">rmse</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">evaluate_user_based_cf</span><span class="p">(</span><span class="n">user_item_matrix_train_filled</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span> <span class="n">k_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rmse</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cf_results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">rmse</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User-Based CF with k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: RMSE = </span><span class="si">{</span><span class="n">rmse</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (based on </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> predictions)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot the results</span>
+<span class="n">k_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">cf_results</span><span class="p">]</span>
+<span class="n">rmse_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">rmse</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">rmse</span> <span class="ow">in</span> <span class="n">cf_results</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">k_values</span><span class="p">,</span> <span class="n">rmse_values</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;RMSE vs. Number of Neighbors (User-Based CF)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Neighbors (k)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;RMSE&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>User-Based CF with k=5: RMSE = 1.1511 (based on 7976 predictions)
+User-Based CF with k=10: RMSE = 1.1040 (based on 8970 predictions)
+User-Based CF with k=20: RMSE = 1.0577 (based on 9485 predictions)
+User-Based CF with k=30: RMSE = 1.0405 (based on 9668 predictions)
+User-Based CF with k=50: RMSE = 1.0227 (based on 9809 predictions)
+</pre></div>
+</div>
+<img alt="_images/32ac7d92eb2c6a29d1acc7ae03ffef589e0540b533ab0f624e6753b66d0bbea3.png" src="_images/32ac7d92eb2c6a29d1acc7ae03ffef589e0540b533ab0f624e6753b66d0bbea3.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="model-2-matrix-factorization-using-svd">
+<h2>6. Model 2: Matrix Factorization using SVD<a class="headerlink" href="#model-2-matrix-factorization-using-svd" title="Link to this heading">#</a></h2>
+<section id="matrix-factorization-svd-explained">
+<h3>Matrix Factorization (SVD) Explained<a class="headerlink" href="#matrix-factorization-svd-explained" title="Link to this heading">#</a></h3>
+<p>Matrix Factorization breaks down the big user-movie ratings table into smaller, more manageable patterns. It’s like discovering the basic ingredients that make up people’s movie preferences.</p>
+<p>Imagine movie preferences were just based on two factors: how much action a person likes and how much romance they enjoy. Matrix factorization might discover these underlying patterns without being explicitly told what they are.</p>
+<p>For example, the algorithm might learn that:</p>
+<ul class="simple">
+<li><p>User 1 strongly prefers action (+0.9) and dislikes romance (-0.7)</p></li>
+<li><p>User 2 likes both action (+0.4) and romance (+0.6)</p></li>
+<li><p>Movie A has high action content (+0.8) and low romance (-0.2)</p></li>
+<li><p>Movie B has low action (-0.3) and high romance (+0.9)</p></li>
+</ul>
+<p>Using these patterns, the algorithm can predict that User 1 would likely enjoy Movie A but not Movie B.</p>
+<p>The “n_factors” parameter decides how many of these hidden patterns the algorithm tries to find. More isn’t always better - as shown in our graph, 50 factors works best for this dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train SVD with various parameters</span>
+<span class="n">n_factors_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+<span class="n">svd_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">n_factors</span> <span class="ow">in</span> <span class="n">n_factors_list</span><span class="p">:</span>
+    <span class="c1"># Train SVD model</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">SVD</span><span class="p">(</span><span class="n">n_factors</span><span class="o">=</span><span class="n">n_factors</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainset</span><span class="p">)</span>
+    
+    <span class="c1"># Make predictions on the test set</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">testset</span><span class="p">)</span>
+    
+    <span class="c1"># Calculate RMSE</span>
+    <span class="n">rmse</span> <span class="o">=</span> <span class="n">accuracy</span><span class="o">.</span><span class="n">rmse</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+    <span class="n">svd_results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n_factors</span><span class="p">,</span> <span class="n">rmse</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SVD with n_factors=</span><span class="si">{</span><span class="n">n_factors</span><span class="si">}</span><span class="s2">: RMSE = </span><span class="si">{</span><span class="n">rmse</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># If this is the best model so far, save it</span>
+    <span class="k">if</span> <span class="n">n_factors</span> <span class="o">==</span> <span class="mi">50</span><span class="p">:</span>  <span class="c1"># We&#39;ll save the n_factors=50 model for demonstration</span>
+        <span class="n">best_svd_model</span> <span class="o">=</span> <span class="n">model</span>
+
+<span class="c1"># Plot the results</span>
+<span class="n">factor_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">svd_results</span><span class="p">]</span>
+<span class="n">rmse_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">rmse</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">rmse</span> <span class="ow">in</span> <span class="n">svd_results</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">factor_values</span><span class="p">,</span> <span class="n">rmse_values</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;RMSE vs. Number of Factors (SVD)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Factors&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;RMSE&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>RMSE: 0.9350
+SVD with n_factors=20: RMSE = 0.9350
+RMSE: 0.9348
+SVD with n_factors=50: RMSE = 0.9348
+RMSE: 0.9352
+SVD with n_factors=100: RMSE = 0.9352
+</pre></div>
+</div>
+<img alt="_images/aab2f5608acc434b7076b5d96832fa9995c014281affa8bc3851fd8159c153f3.png" src="_images/aab2f5608acc434b7076b5d96832fa9995c014281affa8bc3851fd8159c153f3.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Function to get recommendations from SVD model</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">svd_recommendations</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">svd_model</span><span class="p">,</span> <span class="n">movies_df</span><span class="p">,</span> <span class="n">ratings_df</span><span class="p">,</span> <span class="n">n_recommendations</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate recommendations for a user using the trained SVD model</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    - user_id: ID of the target user</span>
+<span class="sd">    - svd_model: Trained SVD model</span>
+<span class="sd">    - movies_df: DataFrame containing movie information</span>
+<span class="sd">    - ratings_df: DataFrame containing ratings information</span>
+<span class="sd">    - n_recommendations: Number of recommendations to return</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">    - List of tuples (movie_id, predicted_rating, title)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get the movies the user has already rated</span>
+    <span class="n">user_rated_movies</span> <span class="o">=</span> <span class="n">ratings_df</span><span class="p">[</span><span class="n">ratings_df</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">][</span><span class="s1">&#39;movie_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    
+    <span class="c1"># Get all movie IDs</span>
+    <span class="n">all_movie_ids</span> <span class="o">=</span> <span class="n">movies_df</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    
+    <span class="c1"># Find movies the user hasn&#39;t rated</span>
+    <span class="n">movies_to_predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">all_movie_ids</span><span class="p">,</span> <span class="n">user_rated_movies</span><span class="p">)</span>
+    
+    <span class="c1"># Predict ratings for all unseen movies</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">movie_id</span> <span class="ow">in</span> <span class="n">movies_to_predict</span><span class="p">:</span>
+        <span class="n">predicted_rating</span> <span class="o">=</span> <span class="n">svd_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">movie_id</span><span class="p">)</span><span class="o">.</span><span class="n">est</span>
+        <span class="n">movie_title</span> <span class="o">=</span> <span class="n">movies_df</span><span class="p">[</span><span class="n">movies_df</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">movie_id</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">predictions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">movie_id</span><span class="p">,</span> <span class="n">predicted_rating</span><span class="p">,</span> <span class="n">movie_title</span><span class="p">))</span>
+    
+    <span class="c1"># Sort by predicted rating in descending order</span>
+    <span class="n">predictions</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="c1"># Return the top n recommendations</span>
+    <span class="k">return</span> <span class="n">predictions</span><span class="p">[:</span><span class="n">n_recommendations</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="comparison-of-models">
+<h2>7. Comparison of Models<a class="headerlink" href="#comparison-of-models" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display best RMSE for each model</span>
+<span class="n">best_cf_rmse</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">rmse</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">rmse</span> <span class="ow">in</span> <span class="n">cf_results</span><span class="p">)</span>
+<span class="n">best_svd_rmse</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">rmse</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">rmse</span> <span class="ow">in</span> <span class="n">svd_results</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best User-Based CF RMSE: </span><span class="si">{</span><span class="n">best_cf_rmse</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best SVD RMSE: </span><span class="si">{</span><span class="n">best_svd_rmse</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Visualize the results</span>
+<span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;User-Based CF&#39;</span><span class="p">,</span> <span class="s1">&#39;SVD&#39;</span><span class="p">]</span>
+<span class="n">best_rmse</span> <span class="o">=</span> <span class="p">[</span><span class="n">best_cf_rmse</span><span class="p">,</span> <span class="n">best_svd_rmse</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">bars</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">best_rmse</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Best RMSE by Model&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;RMSE (lower is better)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_rmse</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.2</span><span class="p">)</span>  <span class="c1"># Set y-axis limit</span>
+
+<span class="c1"># Add text labels above bars</span>
+<span class="k">for</span> <span class="n">bar</span> <span class="ow">in</span> <span class="n">bars</span><span class="p">:</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">bar</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">bar</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">+</span> <span class="n">bar</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">height</span> <span class="o">+</span> <span class="mf">0.01</span><span class="p">,</span>
+             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">height</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+             <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Best User-Based CF RMSE: 1.0227
+Best SVD RMSE: 0.9348
+</pre></div>
+</div>
+<img alt="_images/996c5c98193c5187fdfc9ab7011429de8ba768d3cd39ab7e5ba2237bd7747549.png" src="_images/996c5c98193c5187fdfc9ab7011429de8ba768d3cd39ab7e5ba2237bd7747549.png" />
+</div>
+</div>
+</section>
+<section id="get-recommendations-for-a-sample-user">
+<h2>8. Get Recommendations for a Sample User<a class="headerlink" href="#get-recommendations-for-a-sample-user" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s use user ID 1 as an example</span>
+<span class="n">sample_user_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># Get recommendations from User-Based CF</span>
+<span class="n">cf_movie_ids</span><span class="p">,</span> <span class="n">cf_scores</span> <span class="o">=</span> <span class="n">user_based_cf</span><span class="p">(</span><span class="n">sample_user_id</span><span class="p">,</span> <span class="n">user_item_matrix_train_filled</span><span class="p">,</span> <span class="n">k_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_recommendations</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">cf_recommendations</span> <span class="o">=</span> <span class="p">[(</span><span class="n">movie_id</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">movies</span><span class="p">[</span><span class="n">movies</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">movie_id</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> 
+                      <span class="k">for</span> <span class="n">movie_id</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">cf_scores</span><span class="p">]</span>
+
+<span class="c1"># Get recommendations from SVD</span>
+<span class="n">svd_recommendations_list</span> <span class="o">=</span> <span class="n">svd_recommendations</span><span class="p">(</span><span class="n">sample_user_id</span><span class="p">,</span> <span class="n">best_svd_model</span><span class="p">,</span> <span class="n">movies</span><span class="p">,</span> <span class="n">ratings</span><span class="p">,</span> <span class="n">n_recommendations</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Display the movies this user has rated highly</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Movies that User </span><span class="si">{</span><span class="n">sample_user_id</span><span class="si">}</span><span class="s2"> has rated highly:&quot;</span><span class="p">)</span>
+<span class="n">user_high_ratings</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">[</span><span class="n">ratings</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">sample_user_id</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">user_high_ratings</span> <span class="o">=</span> <span class="n">user_high_ratings</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">movies</span><span class="p">[[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;movie_id&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">user_high_ratings</span><span class="p">[[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]])</span>
+
+<span class="c1"># Display CF recommendations</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">User-Based Collaborative Filtering recommendations for User </span><span class="si">{</span><span class="n">sample_user_id</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="n">cf_recommendations_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">cf_recommendations</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;predicted_rating&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">])</span>
+<span class="n">display</span><span class="p">(</span><span class="n">cf_recommendations_df</span><span class="p">)</span>
+
+<span class="c1"># Display SVD recommendations</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">SVD recommendations for User </span><span class="si">{</span><span class="n">sample_user_id</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="n">svd_recommendations_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">svd_recommendations_list</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">,</span> <span class="s1">&#39;predicted_rating&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">])</span>
+<span class="n">display</span><span class="p">(</span><span class="n">svd_recommendations_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Movies that User 1 has rated highly:
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>movie_id</th>
+      <th>rating</th>
+      <th>title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>170</td>
+      <td>5</td>
+      <td>Cinema Paradiso (1988)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>175</td>
+      <td>5</td>
+      <td>Brazil (1985)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>119</td>
+      <td>5</td>
+      <td>Maya Lin: A Strong Clear Vision (1994)</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>181</td>
+      <td>5</td>
+      <td>Return of the Jedi (1983)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>109</td>
+      <td>5</td>
+      <td>Mystery Science Theater 3000: The Movie (1996)</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>User-Based Collaborative Filtering recommendations for User 1:
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>movie_id</th>
+      <th>predicted_rating</th>
+      <th>title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>20</td>
+      <td>5.0</td>
+      <td>Angels and Insects (1995)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>262</td>
+      <td>5.0</td>
+      <td>In the Company of Men (1997)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>285</td>
+      <td>5.0</td>
+      <td>Secrets &amp; Lies (1996)</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>313</td>
+      <td>5.0</td>
+      <td>Titanic (1997)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>331</td>
+      <td>5.0</td>
+      <td>Edge, The (1997)</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SVD recommendations for User 1:
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>movie_id</th>
+      <th>predicted_rating</th>
+      <th>title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>483</td>
+      <td>4.782656</td>
+      <td>Casablanca (1942)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>408</td>
+      <td>4.701608</td>
+      <td>Close Shave, A (1995)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>513</td>
+      <td>4.677728</td>
+      <td>Third Man, The (1949)</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>511</td>
+      <td>4.561354</td>
+      <td>Lawrence of Arabia (1962)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>923</td>
+      <td>4.522706</td>
+      <td>Raise the Red Lantern (1991)</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="save-models-for-the-web-app">
+<h2>9. Save Models for the Web App<a class="headerlink" href="#save-models-for-the-web-app" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a directory to save models and data</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Save the SVD model</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;models/svd_model.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">best_svd_model</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+
+<span class="c1"># Save the user-item matrix for collaborative filtering</span>
+<span class="n">user_item_matrix_train_filled</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="s1">&#39;models/user_item_matrix.pkl&#39;</span><span class="p">)</span>
+
+<span class="c1"># Save the movies dataframe</span>
+<span class="n">movies</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="s1">&#39;models/movies.pkl&#39;</span><span class="p">)</span>
+
+<span class="c1"># Save the ratings dataframe</span>
+<span class="n">ratings</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="s1">&#39;models/ratings.pkl&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Models and data saved successfully!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Models and data saved successfully!
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion">
+<h2>10. Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
+<p>In this tutorial, we have built and evaluated two recommendation systems:</p>
+<ol class="arabic simple">
+<li><p><strong>User-Based Collaborative Filtering</strong>: A memory-based approach that finds similar users and recommends items they liked.</p></li>
+<li><p><strong>Matrix Factorization using SVD</strong>: A model-based approach that decomposes the user-item matrix to discover latent factors.</p></li>
+</ol>
+<p>Our evaluation shows that Matrix Factorization generally performs better than User-Based CF, achieving a lower RMSE. However, both approaches have their advantages:</p>
+<ul class="simple">
+<li><p><strong>User-Based CF</strong> is straightforward to implement and explain, and can provide good recommendations when there is enough data. It can also easily incorporate new users and items without retraining.</p></li>
+<li><p><strong>Matrix Factorization</strong> typically achieves better prediction accuracy and is more computationally efficient for large datasets, but requires retraining when new users or items are added.</p></li>
+</ul>
+<p>For a production recommendation system, other considerations would include:</p>
+<ul class="simple">
+<li><p>Cold start problem (handling new users or items)</p></li>
+<li><p>Real-time performance requirements</p></li>
+<li><p>Diversity of recommendations</p></li>
+<li><p>Explainability of recommendations</p></li>
+<li><p>Ethical concerns (e.g., filter bubbles, bias)</p></li>
+</ul>
+<p>The models and data saved from this notebook can be used to create an interactive web application for demonstrating how recommendation systems work.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-recommendation-systems">What are Recommendation Systems?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-setup">1. Environment Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#download-and-load-the-movielens-100k-dataset">2. Download and Load the MovieLens 100K Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-the-movielens-dataset">Understanding the MovieLens Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploratory-data-analysis">3. Exploratory Data Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-training-and-testing-sets">4. Create Training and Testing Sets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-1-user-based-collaborative-filtering">5. Model 1: User-Based Collaborative Filtering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-based-collaborative-filtering-explained">User-Based Collaborative Filtering Explained</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-2-matrix-factorization-using-svd">6. Model 2: Matrix Factorization using SVD</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-factorization-svd-explained">Matrix Factorization (SVD) Explained</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-of-models">7. Comparison of Models</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-recommendations-for-a-sample-user">8. Get Recommendations for a Sample User</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#save-models-for-the-web-app">9. Save Models for the Web App</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">10. Conclusion</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Gaurav Shah
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

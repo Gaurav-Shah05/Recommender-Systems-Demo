@@ -1,0 +1,68 @@
+# Book settings
+title: "Recommender System: An Introduction"
+subtitle: "A comprehensive guide to building a recommender system for movies"
+author: Gaurav Shah
+logo: images/logo.png
+copyright: "2025"
+exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints", "intro.md", "markdown*.md", "notebooks.ipynb"]
+
+# Execution settings
+execute:
+  execute_notebooks: 'off'  # No execution for faster builds
+
+# HTML settings
+html:
+  use_repository_button: true
+  use_issues_button: false
+  use_edit_page_button: false
+  favicon: images/favicon.ico
+  google_analytics_id: ""
+  home_page_in_navbar: false  # No home page in navbar to simplify navigation
+  baseurl: ""
+  extra_navbar: ""
+  extra_footer: ""
+  comments:
+    hypothesis: false
+    utterances: false
+  extra_css:
+    - _static/custom.css
+
+# Launch button settings
+launch_buttons:
+  notebook_interface: classic
+  binderhub_url: ""
+  colab_url: ""
+
+# Repository settings
+repository:
+  url: https://github.com/gaurav-shah05/gaurav-shah05.github.io
+  path_to_book: ""
+  branch: main
+
+# Theme settings
+sphinx:
+  config:
+    html_theme: sphinx_book_theme
+    html_theme_options:
+      use_download_button: true
+      repository_url: https://github.com/gaurav-shah05/gaurav-shah05.github.io
+      repository_branch: main
+      use_repository_button: true
+      use_issues_button: false
+      use_edit_page_button: false
+      path_to_docs: .
+      home_page_in_navbar: false
+      extra_navbar: ""
+      extra_footer: ""
+      navbar_footer_text: ""
+      theme_dev_mode: false
+      toc_title: "On this page"
+      navigation_with_keys: false
+      show_navbar_depth: 2
+      # Completely hide left sidebar
+      show_sidebar: false
+      primary_sidebar_disable: true
+      secondary_sidebar_items: ["page-toc"]
+    language: en
+    html_js_files:
+      - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
