@@ -216,7 +216,7 @@ def landing_page(movies, ratings):
             prog = st.progress(0)
             for i, mid in enumerate(top15):
                 st.session_state.posters[mid] = fetch_poster(mid)
-                prog.progress((i1)/len(top15))
+                prog.progress((i + 1) / len(top15))
         st.session_state.posters_fetched = True
 
     # Display 3×5 grid
