@@ -329,7 +329,7 @@ def buffer_page(movies, ratings, uim, rec_matrix):
     recommend_page(movies, ratings, uim, rec_matrix)
 
 # ─── PAGE 4: RECOMMENDATIONS ─────────────────────────────────────────────────────
-def recommend_page(movies, ratings, uim, svd_model):
+def recommend_page(movies, ratings, uim, rec_matrix):
     st.title("🎉 Your Personalized Picks")
     st.write(f"You rated **{len(st.session_state.user_ratings)}** movies.")
 
@@ -369,7 +369,7 @@ def recommend_page(movies, ratings, uim, svd_model):
         )
 
 # ─── PAGE 5: INSIGHTS ───────────────────────────────────────────────────────────
-def insights_page(movies, ratings, uim, svd_model, V):
+def insights_page(movies, ratings, uim, V):
     st.title("🔍 How It Works")
     st.markdown("""
 **Recommender systems** turn your star ratings into suggestions by discovering patterns:
@@ -429,7 +429,7 @@ Here’s how the **MovieLens 100K** ratings are distributed:
 
 # ─── APP ENTRYPOINT ─────────────────────────────────────────────────────────────
 def main():
-    movies, ratings, uim, svd_model, V = load_data()
+    movies, ratings, uim, rec_matrix, V = load_data()
     page = st.session_state.page
 
     if page == 'landing':
@@ -437,11 +437,11 @@ def main():
     elif page == 'setup':
         setup_page()
     elif page == 'buffer':
-        buffer_page(movies, ratings, uim, svd_model)
+        buffer_page(movies, ratings, uim, rec_matrix)
     elif page == 'insights':
-        insights_page(movies, ratings, uim, svd_model, V)
+        insights_page(movies, ratings, uim, rec_matrix, V)
     else:  # recommendations
-        recommend_page(movies, ratings, uim, svd_model)
+        recommend_page(movies, ratings, uim, rec_matrix)
 
 if __name__ == "__main__":
     main()
