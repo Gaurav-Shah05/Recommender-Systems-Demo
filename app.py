@@ -232,7 +232,7 @@ def landing_page(movies, ratings):
                     st.image("https://via.placeholder.com/120x180?text=NoImage",
                              width=120)
                 full = movies.loc[movies['movie_id']==mid,'title'].iloc[0]
-                short = full if len(full)<=15 else full[:15]"…"
+                short = full if len(full)<=15 else full[:15] + "…"
                 st.markdown(
                     f'<p class="movie-title" title="{full}">{short}</p>',
                     unsafe_allow_html=True
