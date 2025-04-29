@@ -346,7 +346,7 @@ def recommend_page(movies, ratings, uim, svd_model):
                          width=150)
             title = movies.loc[movies['movie_id']==mid,'title'].iloc[0]
             st.markdown(f"### {title}")
-            stars = "★" * int(round(score))  "☆" * (5 - int(round(score)))
+            stars = "★" * int(round(score)) + "☆" * (5 - int(round(score)))
             st.markdown(f"<div style='font-size:24px;color:#FFD700;'>{stars}</div>",
                         unsafe_allow_html=True)
             st.caption(f"{score:.2f}/5 predicted")
