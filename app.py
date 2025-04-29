@@ -126,8 +126,9 @@ def svd_recs(user_ratings, rec_matrix, movies_df, uim, n=6):
     scores = tmp @ rec_matrix    # shape = (n_movies,)
 
     user_avg = sum(user_ratings.values()) / len(user_ratings)
-    scaled_scores = user_avg + (scores - np.mean(scores)) * 0.5
-    normalized_scores = np.clip(scaled_scores, 1, 5)
+    user_std = np.std(list(user_ratings.values()))
+    scaled_scores = user_avg + (scores - np.mean(scores)) * (user_std * 0.8)
+    normalized_scores = np.clip(scaled_scores, 1.2, 4.9)
 
     # # Normalize scores to 1-5 range before returning
     # min_score, max_score = np.min(scores), np.max(scores)
