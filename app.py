@@ -3,7 +3,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
-from surprise import SVD
 from sklearn.neighbors import NearestNeighbors
 from PIL import Image
 from io import BytesIO
@@ -34,9 +33,19 @@ def load_data():
     movies  = pd.read_pickle('models/movies.pkl')
     ratings = pd.read_pickle('models/ratings.pkl')
     uim     = pd.read_pickle('models/user_item_matrix.pkl')
-    with open('models/svd_model.pkl','rb') as f:
-        svd_model = pickle.load(f)
-    return movies, ratings, uim, svd_model
+
+    # Perform a lightweight truncated SVD on the user-item matrix
+    # to get movie latent factors without scikit-surprise.
+    # Keep only k latent dimensions:
+    k = 20
+    U, Sigma, Vt = np.linalg.svd(uim.values, full_matrices=False)
+    V = Vt[:k].T      # shape = (n_movies, k)
+
+    # Precompute the item-item reconstruction matrix:
+    # pred_matrix[i,j] ≈ dot(V[i], V[j])
+    rec_matrix = V @ V.T   # shape = (n_movies, n_movies)
+
+    return movies, ratings, uim, rec_matrix
 
 @st.cache_data
 def load_poster_map():
@@ -103,12 +112,32 @@ def user_cf(user_ratings, uim, movies_df, k=10, n=6):
     candidates.sort(key=lambda x: x[1], reverse=True)
     return candidates[:n]
 
-def svd_recs(user_ratings, svd_model, movies_df, n=6):
-    unseen = movies_df[~movies_df['movie_id'].isin(user_ratings)]
-    preds = [(row.movie_id, svd_model.predict(0, row.movie_id).est)
-             for _,row in unseen.iterrows()]
-    preds.sort(key=lambda x: x[1], reverse=True)
-    return preds[:n]
+def svd_recs(user_ratings, rec_matrix, movies_df, n=6):
+    """
+    Pure-NumPy SVD recommendations.
+    rec_matrix: precomputed item-item affinity (n_movies x n_movies)
+    uim: user-item DataFrame with movies_df.movie_id as columns.
+    """
+    # Build a temporary user rating vector aligned with rec_matrix rows/cols:
+    tmp = np.zeros(rec_matrix.shape[0])
+    col_index = {m:i for i,m in enumerate(uim.columns)}
+    for mid, r in user_ratings.items():
+        if mid in col_index:
+            tmp[col_index[mid]] = r
+
+    # Predict ratings = weighted sum over item affinities:
+    scores = tmp @ rec_matrix    # shape = (n_movies,)
+
+    # Rank movies not yet rated:
+    ranked_idxs = np.argsort(scores)[::-1]
+    recs = []
+    for idx in ranked_idxs:
+        mid = uim.columns[idx]
+        if mid not in user_ratings:
+            recs.append((mid, float(scores[idx])))
+        if len(recs)>=n:
+            break
+    return recs
 
 # ─── CHARTS FOR INSIGHTS ─────────────────────────────────────────────────────────
 def plot_user_similarity(user_ratings, uim, k=10):
@@ -118,8 +147,8 @@ def plot_user_similarity(user_ratings, uim, k=10):
         if m in idx: vec[idx[m]] = r
 
     knn = NearestNeighbors(metric='cosine', algorithm='brute',
-                           n_neighbors=k+1).fit(uim.values)
-    dists, idxs = knn.kneighbors([vec], n_neighbors=k+1)
+                           n_neighbors=k1).fit(uim.values)
+    dists, idxs = knn.kneighbors([vec], n_neighbors=k1)
     df = pd.DataFrame({
         'Other User': uim.index[idxs.flatten()],
         'Similarity': 1 - dists.flatten()
@@ -131,7 +160,7 @@ def plot_user_similarity(user_ratings, uim, k=10):
 
 def plot_svd_latent_factors(svd_model, n=5):
     user_facs = svd_model.pu[:10, :n]
-    df = pd.DataFrame(user_facs, columns=[f"Factor {i+1}" for i in range(n)])
+    df = pd.DataFrame(user_facs, columns=[f"Factor {i1}" for i in range(n)])
     fig = px.imshow(df, labels={'x':'Latent Factor','y':'User','color':'Value'},
                     title="Sample of SVD Latent Factors")
     fig.update_layout(height=300)
@@ -187,11 +216,11 @@ def landing_page(movies, ratings):
             prog = st.progress(0)
             for i, mid in enumerate(top15):
                 st.session_state.posters[mid] = fetch_poster(mid)
-                prog.progress((i+1)/len(top15))
+                prog.progress((i1)/len(top15))
         st.session_state.posters_fetched = True
 
     # Display 3×5 grid
-    for row in [top15[i:i+5] for i in range(0,15,5)]:
+    for row in [top15[i:i5] for i in range(0,15,5)]:
         cols = st.columns(5, gap="large")
         for mid, col in zip(row, cols):
             with col:
@@ -200,10 +229,10 @@ def landing_page(movies, ratings):
                 if img:
                     st.image(img, width=120)
                 else:
-                    st.image("https://via.placeholder.com/120x180?text=No+Image",
+                    st.image("https://via.placeholder.com/120x180?text=NoImage",
                              width=120)
                 full = movies.loc[movies['movie_id']==mid,'title'].iloc[0]
-                short = full if len(full)<=15 else full[:15]+"…"
+                short = full if len(full)<=15 else full[:15]"…"
                 st.markdown(
                     f'<p class="movie-title" title="{full}">{short}</p>',
                     unsafe_allow_html=True
@@ -249,8 +278,8 @@ def setup_page():
     st.write("When you’re ready, click below:")
     st.button("🔄 Generate Recommendations", on_click=to_buffer)
 
-# ─── PAGE 3: BUFFER (SPINNER + COMPUTE) ─────────────────────────────────────────
-def buffer_page(movies, ratings, uim, svd_model):
+# ─── PAGE 3: BUFFER (SPINNER  COMPUTE) ─────────────────────────────────────────
+def buffer_page(movies, ratings, uim, rec_matrix):
     # compute & cache once
     if 'recs' not in st.session_state:
         ur     = st.session_state.user_ratings
@@ -258,12 +287,12 @@ def buffer_page(movies, ratings, uim, svd_model):
         if method.startswith("User"):
             st.session_state.recs = user_cf(ur, uim, movies)
         else:
-            st.session_state.recs = svd_recs(ur, svd_model, movies)
-
-        # fetch posters for recommendations
-        st.session_state.rec_posters = {
-            mid: fetch_poster(mid) for mid,_ in st.session_state.recs
-        }
+            st.session_state.recs = svd_recs(ur, rec_matrix, movies, uim)
+ 
+         # fetch posters for recommendations
+         st.session_state.rec_posters = {
+             mid: fetch_poster(mid) for mid,_ in st.session_state.recs
+         }
 
     # spinner messages once
     if 'buffer_shown' not in st.session_state:
@@ -283,14 +312,14 @@ def buffer_page(movies, ratings, uim, svd_model):
         prog = st.progress(0)
         for i, msg in enumerate(msgs):
             placeholder.info(msg)
-            prog.progress((i+1)/len(msgs))
+            prog.progress((i1)/len(msgs))
             time.sleep(3)
         placeholder.empty()
         prog.empty()
         st.session_state.buffer_shown = True
 
     # now show recommendations in the same run
-    recommend_page(movies, ratings, uim, svd_model)
+    recommend_page(movies, ratings, uim, rec_matrix)
 
 # ─── PAGE 4: RECOMMENDATIONS ─────────────────────────────────────────────────────
 def recommend_page(movies, ratings, uim, svd_model):
@@ -306,11 +335,11 @@ def recommend_page(movies, ratings, uim, svd_model):
             if img:
                 st.image(img, width=150)
             else:
-                st.image("https://via.placeholder.com/150x225?text=No+Image",
+                st.image("https://via.placeholder.com/150x225?text=NoImage",
                          width=150)
             title = movies.loc[movies['movie_id']==mid,'title'].iloc[0]
             st.markdown(f"### {title}")
-            stars = "★"*int(round(score)) + "☆"*(5-int(round(score)))
+            stars = "★"*int(round(score))  "☆"*(5-int(round(score)))
             st.markdown(f"<div style='font-size:24px;color:#FFD700;'>{stars}</div>",
                         unsafe_allow_html=True)
             st.caption(f"{score:.2f}/5 predicted")
