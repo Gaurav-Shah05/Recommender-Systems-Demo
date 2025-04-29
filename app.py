@@ -147,8 +147,8 @@ def plot_user_similarity(user_ratings, uim, k=10):
         if m in idx: vec[idx[m]] = r
 
     knn = NearestNeighbors(metric='cosine', algorithm='brute',
-                           n_neighbors=k1).fit(uim.values)
-    dists, idxs = knn.kneighbors([vec], n_neighbors=k1)
+                           n_neighbors=k+1).fit(uim.values)
+    dists, idxs = knn.kneighbors([vec], n_neighbors=k+1)
     df = pd.DataFrame({
         'Other User': uim.index[idxs.flatten()],
         'Similarity': 1 - dists.flatten()
