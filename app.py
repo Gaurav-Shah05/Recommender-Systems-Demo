@@ -125,16 +125,24 @@ def svd_recs(user_ratings, rec_matrix, movies_df, uim, n=6):
     # Predict ratings = weighted sum over item affinities:
     scores = tmp @ rec_matrix    # shape = (n_movies,)
 
+    # Normalize scores to 1-5 range before returning
+    min_score, max_score = np.min(scores), np.max(scores)
+    if max_score > min_score:  # Avoid division by zero
+        normalized_scores = 1 + 4 * (scores - min_score) / (max_score - min_score)
+    else:
+        normalized_scores = np.ones_like(scores) * 3  # Default to middle rating
+    
     # Rank movies not yet rated:
     ranked_idxs = np.argsort(scores)[::-1]
     recs = []
     for idx in ranked_idxs:
         mid = uim.columns[idx]
         if mid not in user_ratings:
-            recs.append((mid, float(scores[idx])))
+            recs.append((mid, float(normalized_scores[idx])))
         if len(recs)>=n:
             break
     return recs
+
 
 # ─── CHARTS FOR INSIGHTS ─────────────────────────────────────────────────────────
 def plot_user_similarity(user_ratings, uim, k=10):
