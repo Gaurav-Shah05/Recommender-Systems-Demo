@@ -160,7 +160,7 @@ def plot_user_similarity(user_ratings, uim, k=10):
 
 def plot_svd_latent_factors(svd_model, n=5):
     user_facs = svd_model.pu[:10, :n]
-    df = pd.DataFrame(user_facs, columns=[f"Factor {i1}" for i in range(n)])
+    df = pd.DataFrame(user_facs, columns=[f"Factor {i+1}" for i in range(n)])
     fig = px.imshow(df, labels={'x':'Latent Factor','y':'User','color':'Value'},
                     title="Sample of SVD Latent Factors")
     fig.update_layout(height=300)
@@ -312,7 +312,7 @@ def buffer_page(movies, ratings, uim, rec_matrix):
         prog = st.progress(0)
         for i, msg in enumerate(msgs):
             placeholder.info(msg)
-            prog.progress((i1)/len(msgs))
+            prog.progress((i+1)/len(msgs))
             time.sleep(3)
         placeholder.empty()
         prog.empty()
