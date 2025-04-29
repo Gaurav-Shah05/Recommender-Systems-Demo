@@ -109,7 +109,7 @@ def user_cf(user_ratings, uim, movies_df, k=10, n=6):
     candidates.sort(key=lambda x: x[1], reverse=True)
     return candidates[:n]
 
-def svd_recs(user_ratings, rec_matrix, movies_df, n=6):
+def svd_recs(user_ratings, rec_matrix, movies_df, uim, n=6):
     """
     Pure-NumPy SVD recommendations.
     rec_matrix: precomputed item-item affinity (n_movies x n_movies)
