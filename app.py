@@ -38,14 +38,11 @@ def load_data():
     # to get movie latent factors without scikit-surprise.
     # Keep only k latent dimensions:
     k = 20
-    U, Sigma, Vt = np.linalg.svd(uim.values, full_matrices=False)
-    V = Vt[:k].T      # shape = (n_movies, k)
+    U, S, Vt = np.linalg.svd(uim.values, full_matrices=False)
+    V = Vt.T[:, :k]              # movie × factors
+    rec_matrix = V @ V.T         # item-item affinities
 
-    # Precompute the item-item reconstruction matrix:
-    # pred_matrix[i,j] ≈ dot(V[i], V[j])
-    rec_matrix = V @ V.T   # shape = (n_movies, n_movies)
-
-    return movies, ratings, uim, rec_matrix
+    return movies, ratings, uim, rec_matrix, V
 
 @st.cache_data
 def load_poster_map():
@@ -147,8 +144,8 @@ def plot_user_similarity(user_ratings, uim, k=10):
         if m in idx: vec[idx[m]] = r
 
     knn = NearestNeighbors(metric='cosine', algorithm='brute',
-                           n_neighbors=k+1).fit(uim.values)
-    dists, idxs = knn.kneighbors([vec], n_neighbors=k+1)
+                           n_neighbors=k1).fit(uim.values)
+    dists, idxs = knn.kneighbors([vec], n_neighbors=k1)
     df = pd.DataFrame({
         'Other User': uim.index[idxs.flatten()],
         'Similarity': 1 - dists.flatten()
@@ -158,13 +155,23 @@ def plot_user_similarity(user_ratings, uim, k=10):
     fig.update_layout(height=300)
     return fig
 
-def plot_svd_latent_factors(svd_model, n=5):
-    user_facs = svd_model.pu[:10, :n]
-    df = pd.DataFrame(user_facs, columns=[f"Factor {i+1}" for i in range(n)])
-    fig = px.imshow(df, labels={'x':'Latent Factor','y':'User','color':'Value'},
-                    title="Sample of SVD Latent Factors")
-    fig.update_layout(height=300)
-    return fig
+def plot_svd_latent_factors(V, n_factors=5):
+      """
+      V: numpy array of shape (n_movies, k)
+      Displays the first 10 movies' loadings on n_factors latent dimensions.
+      """
+      df = pd.DataFrame(
+          V[:10, :n_factors],
+          index=[f"Movie {i1}" for i in range(10)],
+          columns=[f"Factor {i1}" for i in range(n_factors)]
+      )
+      fig = px.imshow(
+          df,
+          labels={'x':'Latent Factor','y':'Sample Movie Index','color':'Value'},
+          title="Sample of SVD Latent Factors"
+      )
+      fig.update_layout(height=300)
+      return fig
 
 def plot_rating_distribution(ratings):
     cnt = ratings['rating'].value_counts().sort_index()
@@ -216,11 +223,11 @@ def landing_page(movies, ratings):
             prog = st.progress(0)
             for i, mid in enumerate(top15):
                 st.session_state.posters[mid] = fetch_poster(mid)
-                prog.progress((i + 1) / len(top15))
+                prog.progress((i  1) / len(top15))
         st.session_state.posters_fetched = True
 
     # Display 3×5 grid
-    for row in [top15[i : i+5] for i in range(0, 15, 5)]:
+    for row in [top15[i : i5] for i in range(0, 15, 5)]:
         cols = st.columns(5, gap="large")
         for mid, col in zip(row, cols):
             with col:
@@ -232,7 +239,7 @@ def landing_page(movies, ratings):
                     st.image("https://via.placeholder.com/120x180?text=NoImage",
                              width=120)
                 full = movies.loc[movies['movie_id']==mid,'title'].iloc[0]
-                short = full if len(full)<=15 else full[:15] + "…"
+                short = full if len(full)<=15 else full[:15]  "…"
                 st.markdown(
                     f'<p class="movie-title" title="{full}">{short}</p>',
                     unsafe_allow_html=True
@@ -312,7 +319,7 @@ def buffer_page(movies, ratings, uim, rec_matrix):
         prog = st.progress(0)
         for i, msg in enumerate(msgs):
             placeholder.info(msg)
-            prog.progress((i+1)/len(msgs))
+            prog.progress((i1)/len(msgs))
             time.sleep(3)
         placeholder.empty()
         prog.empty()
@@ -339,7 +346,7 @@ def recommend_page(movies, ratings, uim, svd_model):
                          width=150)
             title = movies.loc[movies['movie_id']==mid,'title'].iloc[0]
             st.markdown(f"### {title}")
-            stars = "★" * int(round(score)) + "☆" * (5 - int(round(score)))
+            stars = "★" * int(round(score))  "☆" * (5 - int(round(score)))
             st.markdown(f"<div style='font-size:24px;color:#FFD700;'>{stars}</div>",
                         unsafe_allow_html=True)
             st.caption(f"{score:.2f}/5 predicted")
@@ -362,7 +369,7 @@ def recommend_page(movies, ratings, uim, svd_model):
         )
 
 # ─── PAGE 5: INSIGHTS ───────────────────────────────────────────────────────────
-def insights_page(movies, ratings, uim, svd_model):
+def insights_page(movies, ratings, uim, svd_model, V):
     st.title("🔍 How It Works")
     st.markdown("""
 **Recommender systems** turn your star ratings into suggestions by discovering patterns:
@@ -392,7 +399,7 @@ This heatmap displays the first few **latent factors** uncovered by the SVD algo
 - **Brighter colors** mean a stronger affiliation with that factor.  
 - We predict your rating by seeing how strongly you and each unseen movie align across all these factors.
 """)
-    svd_fig = plot_svd_latent_factors(svd_model)
+    svd_fig = plot_svd_latent_factors(V)
     st.plotly_chart(svd_fig, use_container_width=True)
 
     st.subheader("3. Dataset Rating Distribution")
@@ -422,7 +429,7 @@ Here’s how the **MovieLens 100K** ratings are distributed:
 
 # ─── APP ENTRYPOINT ─────────────────────────────────────────────────────────────
 def main():
-    movies, ratings, uim, svd_model = load_data()
+    movies, ratings, uim, svd_model, V = load_data()
     page = st.session_state.page
 
     if page == 'landing':
